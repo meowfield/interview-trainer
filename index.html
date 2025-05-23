@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -105,10 +105,26 @@
         button:active {
             background-color: var(--btn-bg-active);
         }
+        .top-bar {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+        .lang-toggle {
+            background: var(--btn-bg);
+            color: var(--btn-text);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
         .theme-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
             background: var(--btn-bg);
             color: var(--btn-text);
             border: 1px solid var(--border);
@@ -121,9 +137,33 @@
         .theme-toggle:hover {
             background: var(--btn-bg-hover);
         }
+        .generate-row {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        #generateButton {
+            background: linear-gradient(90deg, #6366f1 0%, #059669 100%);
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.15rem;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px 0 rgba(99,102,241,0.12), 0 1.5px 8px 0 rgba(5,150,105,0.10);
+            transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+            outline: none;
+        }
+        #generateButton:hover, #generateButton:focus {
+            background: linear-gradient(90deg, #4f46e5 0%, #047857 100%);
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 4px 16px 0 rgba(99,102,241,0.18), 0 2.5px 12px 0 rgba(5,150,105,0.18);
+        }
         .copy-notification {
             display: inline-block;
-            margin-left: 12px;
             padding: 6px 12px;
             background-color: var(--copy-notification);
             color: #fff;
@@ -144,41 +184,104 @@
     </style>
 </head>
 <body>
-    <button class="theme-toggle" id="themeToggle">Светлая/Тёмная тема</button>
     <div class="container">
-        <h1>Генератор промпта для собеседования</h1>
+        <div class="top-bar">
+            <div style="flex:1"></div>
+            <button id="langToggle" class="lang-toggle" aria-label="Switch language">EN</button>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <span id="themeIcon"></span>
+            </button>
+        </div>
+        <h1 id="mainTitle"></h1>
 
         <!-- Системный промпт -->
         <div style="margin-bottom: 24px;">
-            <label for="systemPromptTextarea" style="font-weight:600;">Системный промпт (можно редактировать):</label>
-            <textarea id="systemPromptTextarea" name="systemPromptTextarea" rows="10" style="margin-bottom:8px;"></textarea>
+            <label id="labelSystemPrompt" for="systemPrompt"></label>
+            <textarea id="systemPrompt" name="systemPrompt" rows="7" style="margin-bottom: 0;"></textarea>
+        </div>
+        <div style="margin-bottom: 24px;">
+            <label id="labelUserInfo" for="userInfo"></label>
+            <textarea id="userInfo" name="userInfo" rows="5" placeholder="" ></textarea>
+        </div>
+        <div style="margin-bottom: 24px;">
+            <label id="labelJobDescription" for="jobDescription"></label>
+            <textarea id="jobDescription" name="jobDescription" rows="10" placeholder=""></textarea>
         </div>
 
         <div>
-            <label for="userInfo">Информация о пользователе:</label>
-            <textarea id="userInfo" name="userInfo" rows="5" placeholder="Опишите себя, ваши навыки, опыт, достижения и т.д."></textarea>
-        </div>
-        <div>
-            <label for="jobDescription">Описание вакансии:</label>
-            <textarea id="jobDescription" name="jobDescription" rows="10" placeholder="Вставьте сюда полное описание вакансии, на которую вы готовитесь."></textarea>
+            <label id="labelAdditionalContext" for="additionalContext"></label>
+            <textarea id="additionalContext" name="additionalContext" rows="3" placeholder=""></textarea>
         </div>
 
-        <div>
-            <label for="additionalContext">Дополнительные знания (опционально):</label>
-            <textarea id="additionalContext" name="additionalContext" rows="7" placeholder="Здесь можно указать специфические вопросы для этой компании/позиции, инсайты из блогов, статьи о компании, или любую другую информацию, которую LLM должна учесть (например, 'сделать акцент на лидерских качествах', 'избегать упоминания Х')."></textarea>
-        </div>
-
-        <div>
-            <button id="generateButton">Сформировать и скопировать промпт</button>
-            <span id="copyNotification" class="copy-notification">Скопировано!</span>
+        <div class="generate-row">
+            <span id="copyNotification" class="copy-notification"></span>
+            <button id="generateButton"></button>
         </div>
     </div>
     <div class="footer">
-        <p>MVP интерфейс для быстрой подготовки запросов к LLM.</p>
+        <p id="footerText"></p>
     </div>
 
     <script>
-        // Получаем доступ к элементам DOM
+        // ---- Локализация ----
+        const translations = {
+            ru: {
+                mainTitle: 'Генератор промпта для собеседования',
+                labelSystemPrompt: 'Системный промпт:',
+                labelUserInfo: 'Информация о кандидате:',
+                userInfoPlaceholder: 'Введите информацию о себе (резюме, навыки, опыт, самопрезентация)',
+                labelJobDescription: 'Описание вакансии:',
+                jobDescriptionPlaceholder: 'Вставьте сюда полное описание вакансии, на которую вы готовитесь.',
+                labelAdditionalContext: 'Дополнительные знания (опционально):',
+                generateButton: 'Сформировать и скопировать промпт',
+                copyNotification: 'Скопировано!',
+                footerText: 'MVP интерфейс для быстрой подготовки запросов к LLM.'
+            },
+            en: {
+                mainTitle: 'Interview Prompt Generator',
+                labelSystemPrompt: 'System prompt:',
+                labelUserInfo: 'Candidate information:',
+                userInfoPlaceholder: 'Enter your info (CV, skills, experience, self-presentation)',
+                labelJobDescription: 'Job description:',
+                jobDescriptionPlaceholder: 'Paste here the full job description you are preparing for.',
+                labelAdditionalContext: 'Additional knowledge (optional):',
+                generateButton: 'Generate & Copy Prompt',
+                copyNotification: 'Copied!',
+                footerText: 'MVP interface for quick LLM prompt preparation.'
+            }
+        };
+
+        function setLang(lang) {
+            localStorage.setItem('lang', lang);
+            document.documentElement.lang = lang;
+            const t = translations[lang];
+            document.getElementById('mainTitle').textContent = t.mainTitle;
+            document.getElementById('labelSystemPrompt').textContent = t.labelSystemPrompt;
+            document.getElementById('labelUserInfo').textContent = t.labelUserInfo;
+            document.getElementById('userInfo').placeholder = t.userInfoPlaceholder;
+            document.getElementById('labelJobDescription').textContent = t.labelJobDescription;
+            document.getElementById('jobDescription').placeholder = t.jobDescriptionPlaceholder;
+            document.getElementById('labelAdditionalContext').textContent = t.labelAdditionalContext;
+            document.getElementById('generateButton').textContent = t.generateButton;
+            document.getElementById('copyNotification').textContent = t.copyNotification;
+            document.getElementById('footerText').textContent = t.footerText;
+            document.getElementById('langToggle').textContent = lang === 'ru' ? 'EN' : 'RU';
+        }
+
+        function getLang() {
+            return localStorage.getItem('lang') || 'en';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setLang(getLang());
+            document.getElementById('langToggle').addEventListener('click', () => {
+                const current = getLang();
+                const next = current === 'ru' ? 'en' : 'ru';
+                setLang(next);
+            });
+        });
+
+        // ---- Тема ----
         const userInfoTextarea = document.getElementById('userInfo');
         const jobDescriptionTextarea = document.getElementById('jobDescription');
         const additionalContextTextarea = document.getElementById('additionalContext');
@@ -254,13 +357,21 @@
         });
     // --- Тема ---
     const themeToggle = document.getElementById('themeToggle');
-    const root = document.documentElement;
+    const themeIcon = document.getElementById('themeIcon');
+    function setThemeIcon(theme) {
+        if (theme === 'dark') {
+            themeIcon.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>';
+        } else {
+            themeIcon.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
+        }
+    }
     function applyTheme(theme) {
         if (theme === 'dark') {
             document.body.classList.add('dark-theme');
         } else {
             document.body.classList.remove('dark-theme');
         }
+        setThemeIcon(theme);
     }
     function getPreferredTheme() {
         return localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
