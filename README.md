@@ -1,6 +1,6 @@
-# PrepareToWork
+# Interview Chat Bot
 
-PrepareToWork is a simple tool designed to make copy/paste interactions with AI chat platforms—such as ChatGPT or Google AI Studio (https://aistudio.google.com/prompts/new_chat)—faster and more convenient.
+Interview Chat Bot is a simple tool designed to make copy/paste interactions with AI chat platforms—such as ChatGPT or [Google AI Studio](https://aistudio.google.com/prompts/new_chat)—faster and more convenient.
 
 ## Purpose
 
