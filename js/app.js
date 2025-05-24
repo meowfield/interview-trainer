@@ -25,6 +25,8 @@ const elements = {
     themeIcon: document.getElementById('themeIcon')
 };
 
+// Textarea auto-resize functionality removed - using fixed heights instead
+
 // Language management
 function getCurrentLang() {
     const stored = localStorage.getItem(CONFIG.STORAGE_KEYS.LANGUAGE);
@@ -190,23 +192,8 @@ function showStatus() {
 // Validate form data
 function validateFormData(data) {
     const errors = [];
-    const currentLang = getCurrentLang();
-    const t = translations[currentLang];
-
-    if (!data.userInfo || data.userInfo.length < CONFIG.VALIDATION.MIN_USER_INFO_LENGTH) {
-        errors.push(`${t.labelUserInfo}: Minimum ${CONFIG.VALIDATION.MIN_USER_INFO_LENGTH} characters required`);
-    }
-
-    if (!data.jobDescription || data.jobDescription.length < CONFIG.VALIDATION.MIN_JOB_DESCRIPTION_LENGTH) {
-        errors.push(`${t.labelJobDescription}: Minimum ${CONFIG.VALIDATION.MIN_JOB_DESCRIPTION_LENGTH} characters required`);
-    }
-
-    // Check maximum length for all fields
-    Object.entries(data).forEach(([key, value]) => {
-        if (value && value.length > CONFIG.VALIDATION.MAX_FIELD_LENGTH) {
-            errors.push(`Field too long: Maximum ${CONFIG.VALIDATION.MAX_FIELD_LENGTH} characters allowed`);
-        }
-    });
+    
+    // No length restrictions at all - users can input any amount of text or leave fields empty
 
     return {
         isValid: errors.length === 0,

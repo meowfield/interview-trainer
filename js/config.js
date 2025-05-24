@@ -26,11 +26,10 @@ const CONFIG = {
     // Theme options
     THEMES: ['light', 'dark'],
     
-    // Form validation
+    // Form validation - no restrictions on field length
     VALIDATION: {
-        MIN_USER_INFO_LENGTH: 0,
-        MIN_JOB_DESCRIPTION_LENGTH: 0,
-        MAX_FIELD_LENGTH: 10000
+        // No minimum or maximum length restrictions
+        // Users can input unlimited text or leave fields empty
     },
     
     // Keyboard shortcuts
