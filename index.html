@@ -3,387 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генератор промпта для собеседования</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        :root {
-            --bg-main: #f3f4f6;
-            --bg-container: #fff;
-            --text-main: #18181b;
-            --text-label: #374151;
-            --border: #d1d5db;
-            --btn-bg: #e5e7eb;
-            --btn-bg-hover: #d1d5db;
-            --btn-bg-active: #a3a3a3;
-            --btn-text: #18181b;
-            --accent: #059669;
-            --copy-notification: #059669;
-            --footer-text: #6b7280;
-        }
-        .dark-theme {
-            --bg-main: #18181b;
-            --bg-container: #23272f;
-            --text-main: #f3f4f6;
-            --text-label: #e5e7eb;
-            --border: #374151;
-            --btn-bg: #374151;
-            --btn-bg-hover: #4b5563;
-            --btn-bg-active: #6b7280;
-            --btn-text: #f3f4f6;
-            --accent: #059669;
-            --copy-notification: #059669;
-            --footer-text: #9ca3af;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
-            transition: background 0.3s, color 0.3s;
-        }
-        .container {
-            background-color: var(--bg-container);
-            padding: 24px;
-            border-radius: 8px;
-            box-shadow: 0 4px 16px 0 rgba(0,0,0,0.06);
-            width: 100%;
-            max-width: 800px;
-        }
-        h1 {
-            font-size: 1.875rem;
-            font-weight: 600;
-            color: var(--text-main);
-            text-align: center;
-            margin-bottom: 24px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--text-label);
-        }
-        textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            margin-bottom: 16px;
-            box-sizing: border-box;
-            font-size: 0.875rem;
-            color: var(--text-main);
-            background-color: var(--bg-main);
-            resize: vertical;
-        }
-        textarea:focus {
-            outline: none;
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.4);
-        }
-        button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px 24px;
-            background-color: var(--btn-bg);
-            color: var(--btn-text);
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 1rem;
-            transition: background-color 0.2s;
-        }
-        button:hover {
-            background-color: var(--btn-bg-hover);
-        }
-        button:active {
-            background-color: var(--btn-bg-active);
-        }
-        .top-bar {
-            display: flex;
-            flex-direction: row;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
-            margin-bottom: 8px;
-        }
-        .lang-toggle {
-            background: var(--btn-bg);
-            color: var(--btn-text);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 8px 16px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: background 0.2s, color 0.2s;
-        }
-        .theme-toggle {
-            background: var(--btn-bg);
-            color: var(--btn-text);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 8px 16px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: background 0.2s, color 0.2s;
-        }
-        .theme-toggle:hover {
-            background: var(--btn-bg-hover);
-        }
-        .generate-row {
-            display: flex;
-            flex-direction: row;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 12px;
-            margin-top: 16px;
-        }
-        #generateButton {
-            background: linear-gradient(90deg, #6366f1 0%, #059669 100%);
-            color: #fff;
-            font-weight: 700;
-            font-size: 1.15rem;
-            padding: 14px 30px;
-            border: none;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px 0 rgba(99,102,241,0.12), 0 1.5px 8px 0 rgba(5,150,105,0.10);
-            transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-            outline: none;
-        }
-        #generateButton:hover, #generateButton:focus {
-            background: linear-gradient(90deg, #4f46e5 0%, #047857 100%);
-            transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 4px 16px 0 rgba(99,102,241,0.18), 0 2.5px 12px 0 rgba(5,150,105,0.18);
-        }
-        .copy-notification {
-            display: inline-block;
-            padding: 6px 12px;
-            background-color: var(--copy-notification);
-            color: #fff;
-            border-radius: 4px;
-            font-size: 0.875rem;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .copy-notification.show {
-            opacity: 1;
-        }
-        .footer {
-            margin-top: 32px;
-            text-align: center;
-            font-size: 0.875rem;
-            color: var(--footer-text);
-        }
-    </style>
+    <meta name="description" content="Professional interview prompt generator for AI-powered interview preparation. Create structured prompts for realistic job interview simulations.">
+    <meta name="keywords" content="interview preparation, AI prompts, job interview, career development, interview practice">
+    <meta name="author" content="PrepareToWork">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://preparetowork.github.io/">
+    <meta property="og:title" content="PrepareToWork - Interview Prompt Generator">
+    <meta property="og:description" content="Professional tool for generating comprehensive prompts for AI-powered interview preparation">
+    <meta property="og:site_name" content="PrepareToWork">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://preparetowork.github.io/">
+    <meta property="twitter:title" content="PrepareToWork - Interview Prompt Generator">
+    <meta property="twitter:description" content="Professional tool for generating comprehensive prompts for AI-powered interview preparation">
+    
+    <title>PrepareToWork - Interview Prompt Generator</title>
+    
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "PrepareToWork - Interview Prompt Generator",
+        "description": "Professional tool for generating comprehensive prompts for AI-powered interview preparation",
+        "url": "https://preparetowork.github.io/",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web Browser",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "featureList": [
+            "Multilingual Support (English/Russian)",
+            "Dark/Light Theme Support",
+            "Mobile Responsive Design",
+            "One-Click Copy to Clipboard",
+            "Keyboard Shortcuts"
+        ],
+        "browserRequirements": "Modern web browser with JavaScript enabled"
+    }
+    </script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="manifest" href="manifest.json">
 </head>
 <body>
-    <div class="container">
-        <div class="top-bar">
-            <div style="flex:1"></div>
-            <button id="langToggle" class="lang-toggle" aria-label="Switch language">EN</button>
-            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-                <span id="themeIcon"></span>
-            </button>
+    <header class="header">
+        <div class="header-content">
+            <a href="#" class="logo">
+                <div class="logo-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </div>
+                <span id="logoText">PrepareToWork</span>
+            </a>
+            <div class="header-controls">
+                <button id="langToggle" class="control-btn" aria-label="Switch language">EN</button>
+                <button id="themeToggle" class="control-btn" aria-label="Toggle theme">
+                    <svg id="themeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"/>
+                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    </svg>
+                </button>
+            </div>
         </div>
-        <h1 id="mainTitle"></h1>
+    </header>
 
-        <!-- Системный промпт -->
-        <div style="margin-bottom: 24px;">
-            <label id="labelSystemPrompt" for="systemPrompt"></label>
-            <textarea id="systemPrompt" name="systemPrompt" rows="7" style="margin-bottom: 0;"></textarea>
-        </div>
-        <div style="margin-bottom: 24px;">
-            <label id="labelUserInfo" for="userInfo"></label>
-            <textarea id="userInfo" name="userInfo" rows="5" placeholder="" ></textarea>
-        </div>
-        <div style="margin-bottom: 24px;">
-            <label id="labelJobDescription" for="jobDescription"></label>
-            <textarea id="jobDescription" name="jobDescription" rows="10" placeholder=""></textarea>
+    <main class="main">
+        <div class="hero">
+            <h1 id="heroTitle" class="hero-title">Interview Prompt Generator</h1>
+            <p id="heroSubtitle" class="hero-subtitle">Create comprehensive prompts for AI-powered interview preparation</p>
         </div>
 
-        <div>
-            <label id="labelAdditionalContext" for="additionalContext"></label>
-            <textarea id="additionalContext" name="additionalContext" rows="3" placeholder=""></textarea>
+        <div class="form-container">
+            <div class="form-section">
+                <label id="labelSystemPrompt" class="form-label" for="systemPrompt">System Prompt</label>
+                <textarea id="systemPrompt" class="form-textarea extra-large" placeholder="Enter your system prompt here..."></textarea>
+            </div>
+
+            <div class="form-section">
+                <label id="labelUserInfo" class="form-label" for="userInfo">Candidate Information</label>
+                <textarea id="userInfo" class="form-textarea large" placeholder="Share your background, skills, and experience..."></textarea>
+            </div>
+
+            <div class="form-section">
+                <label id="labelJobDescription" class="form-label" for="jobDescription">Job Description</label>
+                <textarea id="jobDescription" class="form-textarea extra-large" placeholder="Paste the complete job description here..."></textarea>
+            </div>
+
+            <div class="form-section">
+                <label id="labelAdditionalContext" class="form-label" for="additionalContext">Additional Context</label>
+                <textarea id="additionalContext" class="form-textarea" placeholder="Any additional information or specific requirements..."></textarea>
+            </div>
+
+            <div class="action-bar">
+                <div id="statusIndicator" class="status-indicator">
+                    <div class="status-icon">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                            <polyline points="20,6 9,17 4,12"/>
+                        </svg>
+                    </div>
+                    <span id="statusText" class="status-text">Copied to clipboard!</span>
+                </div>
+                <button id="generateButton" class="generate-btn">
+                    <span class="btn-text">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                        </svg>
+                        <span id="generateButtonText">Generate & Copy Prompt</span>
+                    </span>
+                    <div class="spinner"></div>
+                </button>
+            </div>
         </div>
+    </main>
 
-        <div class="generate-row">
-            <span id="copyNotification" class="copy-notification"></span>
-            <button id="generateButton"></button>
+    <footer class="footer">
+        <div class="footer-content">
+            <p id="footerText">Professional interview preparation tool for modern developers</p>
         </div>
-    </div>
-    <div class="footer">
-        <p id="footerText"></p>
-    </div>
+    </footer>
 
-    <script>
-        // ---- Локализация ----
-        const translations = {
-            ru: {
-                mainTitle: 'Генератор промпта для собеседования',
-                labelSystemPrompt: 'Системный промпт:',
-                labelUserInfo: 'Информация о кандидате:',
-                userInfoPlaceholder: 'Введите информацию о себе (резюме, навыки, опыт, самопрезентация)',
-                labelJobDescription: 'Описание вакансии:',
-                jobDescriptionPlaceholder: 'Вставьте сюда полное описание вакансии, на которую вы готовитесь.',
-                labelAdditionalContext: 'Дополнительные знания (опционально):',
-                generateButton: 'Сформировать и скопировать промпт',
-                copyNotification: 'Скопировано!',
-                footerText: 'MVP интерфейс для быстрой подготовки запросов к LLM.'
-            },
-            en: {
-                mainTitle: 'Interview Prompt Generator',
-                labelSystemPrompt: 'System prompt:',
-                labelUserInfo: 'Candidate information:',
-                userInfoPlaceholder: 'Enter your info (CV, skills, experience, self-presentation)',
-                labelJobDescription: 'Job description:',
-                jobDescriptionPlaceholder: 'Paste here the full job description you are preparing for.',
-                labelAdditionalContext: 'Additional knowledge (optional):',
-                generateButton: 'Generate & Copy Prompt',
-                copyNotification: 'Copied!',
-                footerText: 'MVP interface for quick LLM prompt preparation.'
-            }
-        };
-
-        function setLang(lang) {
-            localStorage.setItem('lang', lang);
-            document.documentElement.lang = lang;
-            const t = translations[lang];
-            document.getElementById('mainTitle').textContent = t.mainTitle;
-            document.getElementById('labelSystemPrompt').textContent = t.labelSystemPrompt;
-            document.getElementById('labelUserInfo').textContent = t.labelUserInfo;
-            document.getElementById('userInfo').placeholder = t.userInfoPlaceholder;
-            document.getElementById('labelJobDescription').textContent = t.labelJobDescription;
-            document.getElementById('jobDescription').placeholder = t.jobDescriptionPlaceholder;
-            document.getElementById('labelAdditionalContext').textContent = t.labelAdditionalContext;
-            document.getElementById('generateButton').textContent = t.generateButton;
-            document.getElementById('copyNotification').textContent = t.copyNotification;
-            document.getElementById('footerText').textContent = t.footerText;
-            document.getElementById('langToggle').textContent = lang === 'ru' ? 'EN' : 'RU';
-        }
-
-        function getLang() {
-            return localStorage.getItem('lang') || 'en';
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            setLang(getLang());
-            document.getElementById('langToggle').addEventListener('click', () => {
-                const current = getLang();
-                const next = current === 'ru' ? 'en' : 'ru';
-                setLang(next);
-            });
-        });
-
-        // ---- Тема ----
-        const userInfoTextarea = document.getElementById('userInfo');
-        const jobDescriptionTextarea = document.getElementById('jobDescription');
-        const additionalContextTextarea = document.getElementById('additionalContext');
-        const generateButton = document.getElementById('generateButton');
-        const copyNotification = document.getElementById('copyNotification');
-        const systemPromptTextarea = document.getElementById('systemPromptTextarea');
-
-        // Значение системного промпта по умолчанию (можно заменить на свой)
-        const defaultSystemPrompt = `Ты получишь следующие данные, обернутые в теги:
-<user_profile_data>: Информация о кандидате (резюме, навыки, опыт, самопрезентация).
-<job_description_data>: Описание вакансии (требования, задачи, стек, описание компании).
-<additional_context_data>: Любая дополнительная информация (если есть).
-
-Твоя задача — сгенерировать реалистичный диалог собеседования для данной вакансии, где ты выступаешь в роли "Интервьюера", а кандидат — это пользователь, чьи данные переданы в <user_profile_data>.
-
-1. Сформулируй вопросы интервьюера, которые логично задать по данной вакансии и профилю кандидата.
-2.  "Идеальные" ответы от "Кандидата". Ответы должны:
-    * Быть четкими, структурированными и убедительными.
-    * Демонстрировать навыки и опыт кандидата из <user_profile_data>, напрямую связывая их с требованиями из <job_description_data>.
-    * Использовать STAR-метод или аналогичные техники для ответов на поведенческие вопросы, если это уместно.
-    * Учитывать контекст из <additional_context_data>, если он предоставлен.
-{{ ... }}
-... и так далее.
-
-Сгенерируй достаточное количество вопросов и ответов, чтобы покрыть ключевые аспекты собеседования для данной роли (например, 5-7 пар вопрос-ответ). Постарайся, чтобы вопросы были разнообразными (опыт, мотивация, поведенческие, ситуационные).
-Заверши диалог логическим финалом, например, вопросами от кандидата к интервьюеру или обсуждением следующих шагов.`;
-
-        // Заполняем textarea системного промпта значением по умолчанию при загрузке
-        window.addEventListener('DOMContentLoaded', () => {
-            systemPromptTextarea.value = defaultSystemPrompt;
-        });
-
-        // Обработчик нажатия на кнопку
-        generateButton.addEventListener('click', () => {
-            // Получаем значения из текстовых полей
-            const userInfo = userInfoTextarea.value.trim();
-            const jobDescription = jobDescriptionTextarea.value.trim();
-            const additionalContext = additionalContextTextarea.value.trim();
-            const systemPrompt = systemPromptTextarea.value.trim();
-
-            // Формируем итоговый текст
-            let finalText = systemPrompt;
-
-            finalText += `\n\n<user_profile_data>\n${userInfo}\n</user_profile_data>`;
-            finalText += `\n\n<job_description_data>\n${jobDescription}\n</job_description_data>`;
-
-            if (additionalContext !== "") {
-                finalText += `\n\n<additional_context_data>\n${additionalContext}\n</additional_context_data>`;
-            }
-
-            // Копирование в буфер обмена
-            // Создаем временный textarea для копирования
-            const tempTextArea = document.createElement('textarea');
-            tempTextArea.value = finalText;
-            document.body.appendChild(tempTextArea);
-            tempTextArea.select();
-
-            try {
-                document.execCommand('copy');
-                // Показываем уведомление "Скопировано!"
-                copyNotification.classList.add('show');
-                // Прячем уведомление через 2.5 секунды
-                setTimeout(() => {
-                    copyNotification.classList.remove('show');
-                }, 2500);
-            } catch (err) {
-                console.error('Ошибка при копировании в буфер обмена: ', err);
-                // Можно добавить уведомление об ошибке для пользователя, если нужно
-                alert('Не удалось скопировать текст. Пожалуйста, скопируйте вручную.');
-            }
-
-            document.body.removeChild(tempTextArea); // Удаляем временный textarea
-        });
-    // --- Тема ---
-    const themeToggle = document.getElementById('themeToggle');
-    const themeIcon = document.getElementById('themeIcon');
-    function setThemeIcon(theme) {
-        if (theme === 'dark') {
-            themeIcon.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>';
-        } else {
-            themeIcon.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
-        }
-    }
-    function applyTheme(theme) {
-        if (theme === 'dark') {
-            document.body.classList.add('dark-theme');
-        } else {
-            document.body.classList.remove('dark-theme');
-        }
-        setThemeIcon(theme);
-    }
-    function getPreferredTheme() {
-        return localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    }
-    themeToggle.addEventListener('click', () => {
-        const current = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
-        const next = current === 'dark' ? 'light' : 'dark';
-        applyTheme(next);
-        localStorage.setItem('theme', next);
-    });
-    // Применяем тему при загрузке
-    applyTheme(getPreferredTheme());
-    </script>
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/translations.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
