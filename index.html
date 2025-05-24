@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Simple tool for generating AI prompts to help you practice job interviews.">
+    <meta name="description" content="Interview Prompt Generator">
     <meta name="keywords" content="interview preparation, AI prompts, job interview, practice">
     <meta name="author" content="Interview Prep Tool">
     <meta name="robots" content="index, follow">
@@ -12,14 +12,14 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://preparetowork.github.io/">
     <meta property="og:title" content="Interview Prep Tool - AI Prompt Generator">
-    <meta property="og:description" content="Simple tool for generating AI prompts to help you practice job interviews">
+    <meta property="og:description" content="Interview Prompt Generator">
     <meta property="og:site_name" content="Interview Prep Tool">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://preparetowork.github.io/">
     <meta property="twitter:title" content="Interview Prep Tool - AI Prompt Generator">
-    <meta property="twitter:description" content="Simple tool for generating AI prompts to help you practice job interviews">
+    <meta property="twitter:description" content="Interview Prompt Generator">
     
     <title>Interview Prep Tool - AI Prompt Generator</title>
     
@@ -29,7 +29,7 @@
         "@context": "https://schema.org",
         "@type": "WebApplication",
         "name": "Interview Prep Tool - AI Prompt Generator",
-        "description": "Simple tool for generating AI prompts to help you practice job interviews",
+        "description": "Interview Prompt Generator",
         "url": "https://preparetowork.github.io/",
         "applicationCategory": "BusinessApplication",
         "operatingSystem": "Web Browser",
@@ -136,15 +136,31 @@
                     </div>
                     <span id="statusText" class="status-text">Copied to clipboard!</span>
                 </div>
-                <button id="generateButton" class="generate-btn">
-                    <span class="btn-text">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
-                        </svg>
-                        <span id="generateButtonText">Generate & Copy Prompt</span>
-                    </span>
-                    <div class="spinner"></div>
-                </button>
+                <div class="button-group">
+                    <button id="generateButton" class="generate-btn">
+                        <span class="btn-text">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                            </svg>
+                            <span id="generateButtonText">Generate & Copy Prompt</span>
+                        </span>
+                        <div class="spinner"></div>
+                    </button>
+                    <div class="ai-buttons">
+                        <button id="aiStudioButton" class="ai-btn ai-studio-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="13,2 3,14 12,14 11,22 21,10 12,10"/>
+                            </svg>
+                            <span id="aiStudioButtonText">AI Studio</span>
+                        </button>
+                        <button id="chatGptButton" class="ai-btn chatgpt-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                            </svg>
+                            <span id="chatGptButtonText">ChatGPT</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </main>

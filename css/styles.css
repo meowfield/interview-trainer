@@ -371,6 +371,67 @@ body {
     gap: 1rem;
 }
 
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-end;
+}
+
+.ai-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.ai-btn {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 0.8rem;
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.ai-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.ai-studio-btn {
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    border-color: #f59e0b;
+    color: white;
+}
+
+.ai-studio-btn:hover {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    border-color: #f97316;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.chatgpt-btn {
+    background: linear-gradient(135deg, #10a37f, #0d8f6f);
+    border-color: #10a37f;
+    color: white;
+}
+
+.chatgpt-btn:hover {
+    background: linear-gradient(135deg, #0d8f6f, #0b7a5e);
+    border-color: #0d8f6f;
+    box-shadow: 0 4px 12px rgba(16, 163, 127, 0.3);
+}
+
 .status-indicator {
     display: flex;
     align-items: center;
@@ -481,9 +542,27 @@ body {
         gap: 1rem;
     }
     
+    .button-group {
+        width: 100%;
+        align-items: center;
+    }
+    
     .generate-btn {
         width: 100%;
         justify-content: center;
+    }
+    
+    .ai-buttons {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .ai-btn {
+        flex: 1;
+        justify-content: center;
+        min-width: 120px;
+        padding: 0.65rem 0.8rem;
+        font-size: 0.75rem;
     }
     
     .hero-title {

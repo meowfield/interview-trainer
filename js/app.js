@@ -10,6 +10,8 @@ const elements = {
     labelJobDescription: document.getElementById('labelJobDescription'),
     labelAdditionalContext: document.getElementById('labelAdditionalContext'),
     generateButtonText: document.getElementById('generateButtonText'),
+    aiStudioButtonText: document.getElementById('aiStudioButtonText'),
+    chatGptButtonText: document.getElementById('chatGptButtonText'),
     statusText: document.getElementById('statusText'),
     footerText: document.getElementById('footerText'),
     interviewStage: document.getElementById('interviewStage'),
@@ -19,6 +21,8 @@ const elements = {
     jobDescription: document.getElementById('jobDescription'),
     additionalContext: document.getElementById('additionalContext'),
     generateButton: document.getElementById('generateButton'),
+    aiStudioButton: document.getElementById('aiStudioButton'),
+    chatGptButton: document.getElementById('chatGptButton'),
     statusIndicator: document.getElementById('statusIndicator'),
     langToggle: document.getElementById('langToggle'),
     themeToggle: document.getElementById('themeToggle'),
@@ -57,8 +61,23 @@ function setLanguage(lang) {
         elements.labelJobDescription.textContent = t.labelJobDescription;
         elements.labelAdditionalContext.textContent = t.labelAdditionalContext;
         elements.generateButtonText.textContent = t.generateButtonText;
+        elements.aiStudioButtonText.textContent = t.aiStudioButtonText;
+        elements.chatGptButtonText.textContent = t.chatGptButtonText;
         elements.statusText.textContent = t.statusText;
         elements.footerText.textContent = t.footerText;
+        
+        // Hide empty elements
+        if (!t.heroSubtitle || t.heroSubtitle.trim() === '') {
+            elements.heroSubtitle.style.display = 'none';
+        } else {
+            elements.heroSubtitle.style.display = '';
+        }
+        
+        if (!t.footerText || t.footerText.trim() === '') {
+            document.querySelector('.footer').style.display = 'none';
+        } else {
+            document.querySelector('.footer').style.display = '';
+        }
         
         // Update select options
         updateSelectOptions(lang);
@@ -207,6 +226,35 @@ function showErrors(errors) {
     alert(errorMessage);
 }
 
+// Generate prompt text
+function generatePromptText() {
+    const formData = {
+        interviewStage: elements.interviewStage.value,
+        preparationType: elements.preparationType.value,
+        systemPrompt: elements.systemPrompt.value.trim(),
+        userInfo: elements.userInfo.value.trim(),
+        jobDescription: elements.jobDescription.value.trim(),
+        additionalContext: elements.additionalContext.value.trim()
+    };
+
+    const currentLang = getCurrentLang();
+    let finalPrompt = formData.systemPrompt || systemPrompts[formData.preparationType][currentLang];
+    
+    // Add interview stage information
+    const t = translations[currentLang];
+    const stageText = t.interviewStages[formData.interviewStage];
+    finalPrompt += `\n\n<interview_stage>\n${stageText}\n</interview_stage>`;
+    
+    finalPrompt += `\n\n<user_profile_data>\n${formData.userInfo}\n</user_profile_data>`;
+    finalPrompt += `\n\n<job_description_data>\n${formData.jobDescription}\n</job_description_data>`;
+    
+    if (formData.additionalContext) {
+        finalPrompt += `\n\n<additional_context_data>\n${formData.additionalContext}\n</additional_context_data>`;
+    }
+
+    return finalPrompt;
+}
+
 // Generate and copy prompt
 async function generatePrompt() {
     try {
@@ -232,21 +280,7 @@ async function generatePrompt() {
         // Simulate processing time for better UX
         await new Promise(resolve => setTimeout(resolve, CONFIG.LOADING_SIMULATION_TIME));
 
-        const currentLang = getCurrentLang();
-        let finalPrompt = formData.systemPrompt || systemPrompts[formData.preparationType][currentLang];
-        
-        // Add interview stage information
-        const t = translations[currentLang];
-        const stageText = t.interviewStages[formData.interviewStage];
-        finalPrompt += `\n\n<interview_stage>\n${stageText}\n</interview_stage>`;
-        
-        finalPrompt += `\n\n<user_profile_data>\n${formData.userInfo}\n</user_profile_data>`;
-        finalPrompt += `\n\n<job_description_data>\n${formData.jobDescription}\n</job_description_data>`;
-        
-        if (formData.additionalContext) {
-            finalPrompt += `\n\n<additional_context_data>\n${formData.additionalContext}\n</additional_context_data>`;
-        }
-
+        const finalPrompt = generatePromptText();
         const success = await copyToClipboard(finalPrompt);
         
         if (success) {
@@ -276,6 +310,78 @@ elements.themeToggle.addEventListener('click', () => {
 });
 
 elements.generateButton.addEventListener('click', generatePrompt);
+elements.aiStudioButton.addEventListener('click', copyAndOpenAiStudio);
+elements.chatGptButton.addEventListener('click', copyAndOpenChatGPT);
+
+// Copy prompt and open AI Studio
+async function copyAndOpenAiStudio() {
+    try {
+        const formData = {
+            interviewStage: elements.interviewStage.value,
+            preparationType: elements.preparationType.value,
+            systemPrompt: elements.systemPrompt.value.trim(),
+            userInfo: elements.userInfo.value.trim(),
+            jobDescription: elements.jobDescription.value.trim(),
+            additionalContext: elements.additionalContext.value.trim()
+        };
+
+        // Validate form data
+        const validation = validateFormData(formData);
+        if (!validation.isValid) {
+            showErrors(validation.errors);
+            return;
+        }
+
+        const finalPrompt = generatePromptText();
+        const success = await copyToClipboard(finalPrompt);
+        
+        if (success) {
+            showStatus();
+            // Open AI Studio in new tab
+            window.open('https://aistudio.google.com/app/prompts/new_chat', '_blank');
+        } else {
+            throw new Error('Failed to copy to clipboard');
+        }
+    } catch (error) {
+        console.error('Error copying and opening AI Studio:', error);
+        alert('An error occurred while copying the prompt. Please try again.');
+    }
+}
+
+// Copy prompt and open ChatGPT
+async function copyAndOpenChatGPT() {
+    try {
+        const formData = {
+            interviewStage: elements.interviewStage.value,
+            preparationType: elements.preparationType.value,
+            systemPrompt: elements.systemPrompt.value.trim(),
+            userInfo: elements.userInfo.value.trim(),
+            jobDescription: elements.jobDescription.value.trim(),
+            additionalContext: elements.additionalContext.value.trim()
+        };
+
+        // Validate form data
+        const validation = validateFormData(formData);
+        if (!validation.isValid) {
+            showErrors(validation.errors);
+            return;
+        }
+
+        const finalPrompt = generatePromptText();
+        const success = await copyToClipboard(finalPrompt);
+        
+        if (success) {
+            showStatus();
+            // Open ChatGPT in new tab
+            window.open('https://chat.openai.com/', '_blank');
+        } else {
+            throw new Error('Failed to copy to clipboard');
+        }
+    } catch (error) {
+        console.error('Error copying and opening ChatGPT:', error);
+        alert('An error occurred while copying the prompt. Please try again.');
+    }
+}
 
 // Add event listeners for customization controls
 elements.preparationType.addEventListener('change', updateSystemPrompt);
