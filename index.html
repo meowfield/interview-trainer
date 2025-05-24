@@ -1,35 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Professional interview prompt generator for AI-powered interview preparation. Create structured prompts for realistic job interview simulations.">
-    <meta name="keywords" content="interview preparation, AI prompts, job interview, career development, interview practice">
-    <meta name="author" content="PrepareToWork">
+    <meta name="description" content="Simple tool for generating AI prompts to help you practice job interviews.">
+    <meta name="keywords" content="interview preparation, AI prompts, job interview, practice">
+    <meta name="author" content="Interview Prep Tool">
     <meta name="robots" content="index, follow">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://preparetowork.github.io/">
-    <meta property="og:title" content="PrepareToWork - Interview Prompt Generator">
-    <meta property="og:description" content="Professional tool for generating comprehensive prompts for AI-powered interview preparation">
-    <meta property="og:site_name" content="PrepareToWork">
+    <meta property="og:title" content="Interview Prep Tool - AI Prompt Generator">
+    <meta property="og:description" content="Simple tool for generating AI prompts to help you practice job interviews">
+    <meta property="og:site_name" content="Interview Prep Tool">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://preparetowork.github.io/">
-    <meta property="twitter:title" content="PrepareToWork - Interview Prompt Generator">
-    <meta property="twitter:description" content="Professional tool for generating comprehensive prompts for AI-powered interview preparation">
+    <meta property="twitter:title" content="Interview Prep Tool - AI Prompt Generator">
+    <meta property="twitter:description" content="Simple tool for generating AI prompts to help you practice job interviews">
     
-    <title>PrepareToWork - Interview Prompt Generator</title>
+    <title>Interview Prep Tool - AI Prompt Generator</title>
     
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        "name": "PrepareToWork - Interview Prompt Generator",
-        "description": "Professional tool for generating comprehensive prompts for AI-powered interview preparation",
+        "name": "Interview Prep Tool - AI Prompt Generator",
+        "description": "Simple tool for generating AI prompts to help you practice job interviews",
         "url": "https://preparetowork.github.io/",
         "applicationCategory": "BusinessApplication",
         "operatingSystem": "Web Browser",
@@ -39,13 +39,12 @@
             "priceCurrency": "USD"
         },
         "featureList": [
-            "Multilingual Support (English/Russian)",
-            "Dark/Light Theme Support",
-            "Mobile Responsive Design",
-            "One-Click Copy to Clipboard",
-            "Keyboard Shortcuts"
+            "Multiple interview types",
+            "Three preparation modes",
+            "Multilingual Support",
+            "One-Click Copy to Clipboard"
         ],
-        "browserRequirements": "Modern web browser with JavaScript enabled"
+        "browserRequirements": "Modern web browser"
     }
     </script>
     
@@ -86,6 +85,28 @@
         </div>
 
         <div class="form-container">
+            <div class="select-container">
+                <div class="form-section select-section">
+                    <label id="labelInterviewStage" class="form-label" for="interviewStage">Interview Stage</label>
+                    <select id="interviewStage" class="form-select">
+                        <option value="hr">HR Interview</option>
+                        <option value="skills">Skills Assessment</option>
+                        <option value="case">Case Interview</option>
+                        <option value="team">Team Meeting</option>
+                        <option value="technical">Technical Interview</option>
+                    </select>
+                </div>
+
+                <div class="form-section select-section">
+                    <label id="labelPreparationType" class="form-label" for="preparationType">Preparation Type</label>
+                    <select id="preparationType" class="form-select">
+                        <option value="questions">Question List Generation</option>
+                        <option value="dialogue">Interactive Dialogue</option>
+                        <option value="ideal">Questions & Ideal Answers</option>
+                    </select>
+                </div>
+            </div>
+
             <div class="form-section">
                 <label id="labelSystemPrompt" class="form-label" for="systemPrompt">System Prompt</label>
                 <textarea id="systemPrompt" class="form-textarea extra-large" placeholder="Enter your system prompt here..."></textarea>

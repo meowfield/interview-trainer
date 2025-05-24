@@ -1,11 +1,11 @@
 // Application Configuration
 const CONFIG = {
     // Application metadata
-    APP_NAME: 'PrepareToWork',
+    APP_NAME: 'Interview Prep Tool',
     VERSION: '1.0.0',
     
     // Default settings
-    DEFAULT_LANGUAGE: 'en',
+    DEFAULT_LANGUAGE: 'ru',
     DEFAULT_THEME: 'auto', // 'light', 'dark', or 'auto'
     
     // UI settings
@@ -28,8 +28,8 @@ const CONFIG = {
     
     // Form validation
     VALIDATION: {
-        MIN_USER_INFO_LENGTH: 10,
-        MIN_JOB_DESCRIPTION_LENGTH: 20,
+        MIN_USER_INFO_LENGTH: 0,
+        MIN_JOB_DESCRIPTION_LENGTH: 0,
         MAX_FIELD_LENGTH: 10000
     },
     

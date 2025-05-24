@@ -3,6 +3,8 @@ const elements = {
     logoText: document.getElementById('logoText'),
     heroTitle: document.getElementById('heroTitle'),
     heroSubtitle: document.getElementById('heroSubtitle'),
+    labelInterviewStage: document.getElementById('labelInterviewStage'),
+    labelPreparationType: document.getElementById('labelPreparationType'),
     labelSystemPrompt: document.getElementById('labelSystemPrompt'),
     labelUserInfo: document.getElementById('labelUserInfo'),
     labelJobDescription: document.getElementById('labelJobDescription'),
@@ -10,6 +12,8 @@ const elements = {
     generateButtonText: document.getElementById('generateButtonText'),
     statusText: document.getElementById('statusText'),
     footerText: document.getElementById('footerText'),
+    interviewStage: document.getElementById('interviewStage'),
+    preparationType: document.getElementById('preparationType'),
     systemPrompt: document.getElementById('systemPrompt'),
     userInfo: document.getElementById('userInfo'),
     jobDescription: document.getElementById('jobDescription'),
@@ -44,6 +48,8 @@ function setLanguage(lang) {
         elements.logoText.textContent = t.logoText;
         elements.heroTitle.textContent = t.heroTitle;
         elements.heroSubtitle.textContent = t.heroSubtitle;
+        elements.labelInterviewStage.textContent = t.labelInterviewStage;
+        elements.labelPreparationType.textContent = t.labelPreparationType;
         elements.labelSystemPrompt.textContent = t.labelSystemPrompt;
         elements.labelUserInfo.textContent = t.labelUserInfo;
         elements.labelJobDescription.textContent = t.labelJobDescription;
@@ -51,6 +57,9 @@ function setLanguage(lang) {
         elements.generateButtonText.textContent = t.generateButtonText;
         elements.statusText.textContent = t.statusText;
         elements.footerText.textContent = t.footerText;
+        
+        // Update select options
+        updateSelectOptions(lang);
         
         elements.systemPrompt.placeholder = t.placeholders.systemPrompt;
         elements.userInfo.placeholder = t.placeholders.userInfo;
@@ -64,12 +73,49 @@ function setLanguage(lang) {
         const currentSystemPrompt = elements.systemPrompt.value.trim();
         const previousLang = lang === 'en' ? 'ru' : 'en';
         
-        // Check if current prompt matches the default prompt of the previous language
-        if (!currentSystemPrompt || currentSystemPrompt === systemPrompts[previousLang]) {
-            elements.systemPrompt.value = systemPrompts[lang];
-        }
+        // Update system prompt based on selected preparation type
+        updateSystemPrompt();
     } catch (error) {
         console.error('Error setting language:', error);
+    }
+}
+
+// Update select options based on language
+function updateSelectOptions(lang) {
+    const t = translations[lang];
+    
+    // Update interview stage options
+    const interviewStageOptions = elements.interviewStage.querySelectorAll('option');
+    interviewStageOptions.forEach(option => {
+        const value = option.value;
+        if (t.interviewStages[value]) {
+            option.textContent = t.interviewStages[value];
+        }
+    });
+    
+    // Update preparation type options
+    const preparationTypeOptions = elements.preparationType.querySelectorAll('option');
+    preparationTypeOptions.forEach(option => {
+        const value = option.value;
+        if (t.preparationTypes[value]) {
+            option.textContent = t.preparationTypes[value];
+        }
+    });
+}
+
+// Update system prompt based on preparation type
+function updateSystemPrompt() {
+    const currentLang = getCurrentLang();
+    const preparationType = elements.preparationType.value;
+    
+    // Only update if the textarea is empty or contains a default prompt
+    const currentPrompt = elements.systemPrompt.value.trim();
+    const isDefaultPrompt = Object.values(systemPrompts).some(prompts => 
+        Object.values(prompts).includes(currentPrompt)
+    );
+    
+    if (!currentPrompt || isDefaultPrompt) {
+        elements.systemPrompt.value = systemPrompts[preparationType][currentLang];
     }
 }
 
@@ -178,6 +224,8 @@ function showErrors(errors) {
 async function generatePrompt() {
     try {
         const formData = {
+            interviewStage: elements.interviewStage.value,
+            preparationType: elements.preparationType.value,
             systemPrompt: elements.systemPrompt.value.trim(),
             userInfo: elements.userInfo.value.trim(),
             jobDescription: elements.jobDescription.value.trim(),
@@ -198,7 +246,13 @@ async function generatePrompt() {
         await new Promise(resolve => setTimeout(resolve, CONFIG.LOADING_SIMULATION_TIME));
 
         const currentLang = getCurrentLang();
-        let finalPrompt = formData.systemPrompt || systemPrompts[currentLang];
+        let finalPrompt = formData.systemPrompt || systemPrompts[formData.preparationType][currentLang];
+        
+        // Add interview stage information
+        const t = translations[currentLang];
+        const stageText = t.interviewStages[formData.interviewStage];
+        finalPrompt += `\n\n<interview_stage>\n${stageText}\n</interview_stage>`;
+        
         finalPrompt += `\n\n<user_profile_data>\n${formData.userInfo}\n</user_profile_data>`;
         finalPrompt += `\n\n<job_description_data>\n${formData.jobDescription}\n</job_description_data>`;
         
@@ -236,6 +290,9 @@ elements.themeToggle.addEventListener('click', () => {
 
 elements.generateButton.addEventListener('click', generatePrompt);
 
+// Add event listeners for customization controls
+elements.preparationType.addEventListener('change', updateSystemPrompt);
+
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
@@ -250,10 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTheme(getCurrentTheme());
     
     // Set default system prompt if empty
-    const currentLang = getCurrentLang();
-    if (!elements.systemPrompt.value) {
-        elements.systemPrompt.value = systemPrompts[currentLang];
-    }
+    updateSystemPrompt();
 });
 
 // Handle system theme changes
